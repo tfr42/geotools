@@ -528,6 +528,8 @@ public class WFS_1_1_0_Protocol implements WFSProtocol {
         if (!XMLConstants.DEFAULT_NS_PREFIX.equals(prefix)) {
             encoder.getNamespaces().declarePrefix(prefix, namespace);
         }
+        //TODO this is a hack to introduce the required ns into the GF request
+        encoder.getNamespaces().declarePrefix("iso19112", "http://www.opengis.net/iso19112");
         WFSResponse response = issuePostRequest(serverRequest, postURL, encoder);
 
         return response;
@@ -658,7 +660,7 @@ public class WFS_1_1_0_Protocol implements WFSProtocol {
             encoder.setEncoding(charset);
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             WFS_1_1_0_Protocol.encode(request, encoder, out);
-            
+            LOGGER.info("WFS 1.1.0 GetFeature request :" + out.toString(charset.name()));
             postContent = new ByteArrayInputStream(out.toByteArray());
         }
         
@@ -671,6 +673,7 @@ public class WFS_1_1_0_Protocol implements WFSProtocol {
 
         WFSResponse response = new WFSResponse(url.toExternalForm(), request, charset, contentType,
                 responseStream);
+        LOGGER.info("WFS 1.1.0 GetFeature response:"+ response.toString());
         return response;
     }
 
